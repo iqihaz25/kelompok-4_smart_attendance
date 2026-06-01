@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "184136420085",
+    "project_id": "hris-modern",
+    "storage_bucket": "hris-modern.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:184136420085:android:d352c021094402bd8093bc",
+        "android_client_info": {
+          "package_name": "com.example.hris_absensi_modern"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9PDpTgM4l2bPTK4qOdyQYfTM1A6Io5RQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
