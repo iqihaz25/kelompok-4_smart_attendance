@@ -36,8 +36,10 @@ class AdminDashboardScreen extends StatelessWidget {
                   const Text("Monitoring kehadiran karyawan hari ini, 24 Mei 2024.", style: TextStyle(color: AppColors.textSecondary)),
                   const SizedBox(height: 32),
                   
-                  // Row Kartu Statistik Angka (menyesuaikan mockup)
-                  Row(
+                  // Wrap Kartu Statistik Angka (menyesuaikan mockup)
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
                     children: [
                       StatCard(
                          title: "TOTAL HADIR", 
@@ -46,7 +48,6 @@ class AdminDashboardScreen extends StatelessWidget {
                          icon: Icons.check_circle_outline,
                          iconColor: AppColors.success,
                       ),
-                      const SizedBox(width: 16),
                       StatCard(
                          title: "TERLAMBAT", 
                          value: "42", 
@@ -54,7 +55,6 @@ class AdminDashboardScreen extends StatelessWidget {
                          icon: Icons.access_time,
                          iconColor: Colors.blue.shade700,
                       ),
-                      const SizedBox(width: 16),
                       StatCard(
                          title: "ALPHA", 
                          value: "12", 

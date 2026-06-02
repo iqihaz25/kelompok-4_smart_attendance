@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'register_info_screen.dart';
 import 'dashboard_screen.dart';
+import '../features/auth/views/login_screen.dart' as admin_auth;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -97,6 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
             TextButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterInfoScreen())),
               child: const Text('Belum punya akun? Daftar di sini', style: TextStyle(color: Color(0xFF006B5E), fontWeight: FontWeight.bold)),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const admin_auth.LoginScreen())),
+              child: const Text('Masuk sebagai Admin', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12)),
             ),
           ],
         ),
