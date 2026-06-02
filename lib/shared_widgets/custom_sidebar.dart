@@ -5,7 +5,7 @@ import '../features/dashboard/views/widgets/dashboard_screen.dart';
 import '../features/dashboard/views/attendance_screen.dart';
 import '../features/employees/views/employee_screen.dart';
 import '../features/reporting/report_screen.dart';
-import '../features/auth/views/login_screen.dart';
+import '../screens/login_screen.dart';
 
 class CustomSidebar extends StatelessWidget {
   final int currentIndex;

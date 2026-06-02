@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/network/websocket_service.dart';
 import '../models/attendance_log_model.dart';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DashboardController extends ChangeNotifier {
   final WebsocketService _wsService = WebsocketService();
@@ -43,21 +44,51 @@ class DashboardController extends ChangeNotifier {
 
   List<Map<String, String>> get employees => _employees;
 
-  void addEmployee(String name, String nik, String dept) {
+  Future<void> addEmployee(
+      String name,
+      String nik,
+      String dept,
+      ) async {
     if (name.isEmpty || nik.isEmpty) return;
-    String inits = name.trim().split(' ').map((e) => e.isNotEmpty ? e[0] : '').take(2).join().toUpperCase();
+
+    String inits = name
+        .trim()
+        .split(' ')
+        .map((e) => e.isNotEmpty ? e[0] : '')
+        .take(2)
+        .join()
+        .toUpperCase();
+
+    await FirebaseFirestore.instance
+        .collection('employees')
+        .doc(nik)
+        .set({
+      'nama': name,
+      'nik': nik,
+      'departemen': dept,
+      'initials': inits,
+      'created_at': FieldValue.serverTimestamp(),
+    });
+
     _employees.add({
-      "id": DateTime.now().millisecondsSinceEpoch.toString(),
+      "id": nik,
       "name": name,
       "nik": nik,
       "dept": dept,
-      "initials": inits.isEmpty ? "?" : inits,
+      "initials": inits,
     });
+
     notifyListeners();
   }
 
-  void deleteEmployee(String id) {
-    _employees.removeWhere((e) => e["id"] == id);
+  Future<void> deleteEmployee(String nik) async {
+    await FirebaseFirestore.instance
+        .collection('employees')
+        .doc(nik)
+        .delete();
+
+    _employees.removeWhere((e) => e["nik"] == nik);
+
     notifyListeners();
   }
 

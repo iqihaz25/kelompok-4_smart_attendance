@@ -18,17 +18,45 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
   final TextEditingController _nikController = TextEditingController();
   String? _selectedDept;
 
-  void _simpan(DashboardController controller) {
-    if (_nameController.text.isNotEmpty && _nikController.text.isNotEmpty && _selectedDept != null) {
-      controller.addEmployee(_nameController.text, _nikController.text, _selectedDept!);
+  Future<void> _simpan(
+      DashboardController controller,
+      ) async {
+    if (_nameController.text.isNotEmpty &&
+        _nikController.text.isNotEmpty &&
+        _selectedDept != null) {
+
+      await controller.addEmployee(
+        _nameController.text,
+        _nikController.text,
+        _selectedDept!,
+      );
+
       _nameController.clear();
       _nikController.clear();
+
       setState(() {
         _selectedDept = null;
       });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Karyawan Berhasil Ditambahkan", style: TextStyle(color: Colors.white)), backgroundColor: AppColors.success));
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Karyawan Berhasil Ditambahkan",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: AppColors.success,
+        ),
+      );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Semua kolom harus diisi!", style: TextStyle(color: Colors.white)), backgroundColor: AppColors.danger));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Semua kolom harus diisi!",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: AppColors.danger,
+        ),
+      );
     }
   }
 
@@ -118,7 +146,9 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                             ),
                             icon: const Icon(Icons.save, color: Colors.white, size: 20),
                             label: const Text("Simpan Karyawan", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
-                            onPressed: () => _simpan(controller),
+                            onPressed: () async {
+                              await _simpan(controller);
+                            },
                           ),
                         )
                       ],
