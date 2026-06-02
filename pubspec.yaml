@@ -31,11 +31,20 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # ---------- User Dependencies ----------
+  firebase_core: ^3.0.0
+  firebase_auth: ^5.0.0
+  cloud_firestore: ^5.0.0
+  geolocator: ^11.0.0      # Wajib untuk GPS di Browser
+  camera: ^0.10.5          # Wajib untuk Akses Kamera/Webcam di Browser
+  intl: ^0.20.2
+
+  # ---------- Admin Dependencies ----------
   # State Management & Routing (Sangat direkomendasikan untuk struktur teratur)
-  provider: ^6.1.2     # atau gunakan flutter_bloc / get
+  provider: ^6.1.2
   
   # Integrasi Peta untuk Geofencing Sisi Admin
-  google_maps_flutter: ^2.11.0 # atau flutter_map jika menggunakan OpenStreetMap
+  google_maps_flutter: ^2.11.0
 
   # Sinkronisasi Real-Time Live Feed dari Server
   web_socket_channel: ^3.0.1
