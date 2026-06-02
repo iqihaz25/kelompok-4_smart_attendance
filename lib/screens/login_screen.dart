@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'register_info_screen.dart';
 import 'dashboard_screen.dart';
 import '../features/auth/views/login_screen.dart' as admin_auth;
+import '../features/dashboard/views/widgets/dashboard_screen.dart' as admin_dashboard;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,6 +23,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (id.isEmpty || pwd.isEmpty) {
       _showAlert("NIK dan Kata Sandi wajib diisi!");
+      return;
+    }
+
+    // Bypass Firebase authentication untuk Admin
+    if (id == "Admin" && pwd == "HanyaAdminYangTahu") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const admin_dashboard.AdminDashboardScreen()),
+      );
       return;
     }
 
@@ -74,8 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 6),
             TextField(
               controller: _idController,
-              decoration: InputDecoration(hintText: 'Contoh: 20240101', border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-              keyboardType: TextInputType.number,
+              decoration: InputDecoration(hintText: 'Contoh: 20240101 (atau Admin)', border: OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
             ),
             const SizedBox(height: 16),
             const Text('KATA SANDI', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0B2F64))),
@@ -98,10 +107,6 @@ class _LoginScreenState extends State<LoginScreen> {
             TextButton(
               onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterInfoScreen())),
               child: const Text('Belum punya akun? Daftar di sini', style: TextStyle(color: Color(0xFF006B5E), fontWeight: FontWeight.bold)),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const admin_auth.LoginScreen())),
-              child: const Text('Masuk sebagai Admin', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 12)),
             ),
           ],
         ),
