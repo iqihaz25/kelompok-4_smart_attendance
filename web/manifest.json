@@ -1,6 +1,6 @@
 {
-    "name": "hris_absensi_modern",
-    "short_name": "hris_absensi_modern",
+    "name": "admin_hris",
+    "short_name": "admin_hris",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
