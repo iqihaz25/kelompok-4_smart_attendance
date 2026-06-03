@@ -45,11 +45,12 @@ class DashboardHomeTab extends StatelessWidget {
         String formattedHariMasuk = totalHariMasuk.toString().padLeft(2, '0');
         String formattedTerlambat = totalTerlambat.toString().padLeft(2, '0');
 
-        return Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               const SizedBox(height: 20),
               // --- AREA PROFILE HEADER ---
               Row(
@@ -211,8 +212,9 @@ class DashboardHomeTab extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
+        ),
+      );
+    },
     );
   }
 }
