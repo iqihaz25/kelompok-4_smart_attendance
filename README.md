@@ -1,6 +1,7 @@
 # admin_hris
 
 A new Flutter project.
+<img width="1600" height="1538" alt="image" src="https://github.com/user-attachments/assets/218f695d-f19f-4443-9dc4-38868d4c19c7" />
 
 ## Getting Started
 
