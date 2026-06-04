@@ -6,6 +6,8 @@ import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
 import 'features/dashboard/controllers/dashboard_controller.dart';
 import 'screens/login_screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'services/notification_service.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -16,7 +18,15 @@ void main() async {
   } catch (e) {
     print("Kamera tidak terdeteksi: \$e");
   }
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.requestPermission();
+  await NotificationService.init();
+
+  String? token =
+  await FirebaseMessaging.instance.getToken();
+
+  print("FCM TOKEN: $token");
   runApp(
     MultiProvider(
       providers: [

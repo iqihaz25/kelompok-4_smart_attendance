@@ -35,6 +35,12 @@ class DashboardController extends ChangeNotifier {
 
   List<AttendanceLogModel> get logs => _logs;
 
+  int get totalPresent =>
+      _logs.where((log) => !log.isAnomaly).length;
+
+  int get totalAnomaly =>
+      _logs.where((log) => log.isAnomaly).length;
+
   // ==== MANAJEMEN KARYAWAN STATE ====
   final List<Map<String, String>> _employees = [
     {"id": "1", "name": "Ahmad Syarif", "nik": "220104230091", "dept": "IT", "initials": "AS"},
