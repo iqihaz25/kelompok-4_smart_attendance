@@ -6,6 +6,7 @@ import '../features/dashboard/views/attendance_screen.dart';
 import '../features/employees/views/employee_screen.dart';
 import '../features/reporting/report_screen.dart';
 import '../screens/login_screen.dart';
+import '../features/leave_approvals/views/admin_leave_screen.dart' as admin_leave;
 
 class CustomSidebar extends StatelessWidget {
   final int currentIndex;
@@ -45,6 +46,9 @@ class CustomSidebar extends StatelessWidget {
           }),
           _buildMenuItem(context, Icons.insert_chart_outlined, "Laporan", 3, () {
             if (currentIndex != 3) Navigator.pushReplacement(context, _pageRoute(const ReportScreen()));
+          }),
+          _buildMenuItem(context, Icons.approval, "Leave & Approvals", 4, () {
+            if (currentIndex != 4) Navigator.pushReplacement(context, _pageRoute(const admin_leave.AdminLeaveScreen()));
           }),
           const Spacer(),
           const Divider(color: Colors.white24, height: 1),

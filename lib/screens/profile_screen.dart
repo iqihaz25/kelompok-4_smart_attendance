@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart'; // Ditambahkan untuk ambi
 import 'login_screen.dart';
 import 'edit_profile_screen.dart';
 import 'change_password_screen.dart';
+import '../features/leave_approvals/views/leave_user_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String employeeId;
@@ -130,6 +131,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     MaterialPageRoute(
                       builder: (_) => ChangePasswordScreen(
                         employeeId: widget.employeeId,
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const Divider(height: 1),
+
+              // Tombol Menu: Leave & Approvals
+              ListTile(
+                leading: const Icon(Icons.receipt_long, color: Color(0xFF0B2F64)),
+                title: const Text("Leave & Approvals"),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LeaveUserScreen(
+                        employeeId: widget.employeeId,
+                        employeeNama: _currentNama,
                       ),
                     ),
                   );

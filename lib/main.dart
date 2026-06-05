@@ -20,13 +20,16 @@ void main() async {
   }
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform);
-  await FirebaseMessaging.instance.requestPermission();
-  await NotificationService.init();
+  try {
+    await FirebaseMessaging.instance.requestPermission();
+    await NotificationService.init();
 
-  String? token =
-  await FirebaseMessaging.instance.getToken();
+    String? token = await FirebaseMessaging.instance.getToken();
+    print("FCM TOKEN: $token");
+  } catch (e) {
+    print("FCM or Notification init failed (expected on Web without vapid): $e");
+  }
 
-  print("FCM TOKEN: $token");
   runApp(
     MultiProvider(
       providers: [

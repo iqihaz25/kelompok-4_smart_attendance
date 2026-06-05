@@ -118,87 +118,100 @@ class _RegisterBiometricScreenState extends State<RegisterBiometricScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            // Indikator Progress Bar (Sesuai image_0ab1e5.png)
-            const Text('LANKAH 2 DARI 2         Biometric Verification', style: TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
-            const LinearProgressIndicator(value: 1.0, color: Color(0xFF006B5E), backgroundColor: Colors.black12),
-            const SizedBox(height: 28),
-            
-            const Text('Daftarkan Wajah Anda', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF0B2F64))),
-            const SizedBox(height: 4),
-            const Text('Pastikan pencahayaan cukup untuk hasil verifikasi yang presisi.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
-            const SizedBox(height: 40),
-            
-            // --- FRAME LINGKARAN KAMERA LIVE (Sesuai image_0ab1e5.png) ---
-            Center(
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 240, height: 240,
-                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFF1F5F9)),
-                    clipBehavior: Clip.antiAlias,
-                    child: _isCameraReady && _cameraController != null
-                        ? CameraPreview(_cameraController!)
-                        : const Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [CircularProgressIndicator(color: Color(0xFF006B5E)), SizedBox(height: 10), Text('Menyalakan Kamera...', style: TextStyle(fontSize: 11, color: Colors.grey))])),
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
+                        // Indikator Progress Bar (Sesuai image_0ab1e5.png)
+                        const Text('LANKAH 2 DARI 2         Biometric Verification', style: TextStyle(fontSize: 11, color: Colors.grey, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 4),
+                        const LinearProgressIndicator(value: 1.0, color: Color(0xFF006B5E), backgroundColor: Colors.black12),
+                        const SizedBox(height: 28),
+                        
+                        const Text('Daftarkan Wajah Anda', textAlign: TextAlign.center, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Color(0xFF0B2F64))),
+                        const SizedBox(height: 4),
+                        const Text('Pastikan pencahayaan cukup untuk hasil verifikasi yang presisi.', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        const SizedBox(height: 40),
+                        
+                        // --- FRAME LINGKARAN KAMERA LIVE (Sesuai image_0ab1e5.png) ---
+                        Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: 240, height: 240,
+                                decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFFF1F5F9)),
+                                clipBehavior: Clip.antiAlias,
+                                child: _isCameraReady && _cameraController != null
+                                    ? CameraPreview(_cameraController!)
+                                    : const Center(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [CircularProgressIndicator(color: Color(0xFF006B5E)), SizedBox(height: 10), Text('Menyalakan Kamera...', style: TextStyle(fontSize: 11, color: Colors.grey))])),
+                              ),
+                              // Border outline hijau pelindung wajah
+                              Container(
+                                width: 210, height: 210,
+                                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFF006B5E), width: 2, strokeAlign: BorderSide.strokeAlignOutside)),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        
+                        // Tag Status Enkripsi
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                            decoration: BoxDecoration(color: const Color(0xFFE2F1E8), borderRadius: BorderRadius.circular(20)),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.gpp_good, color: const Color(0xFF006B5E), size: 16),
+                                const SizedBox(width: 6),
+                                Text(_isFaceCaptured ? 'Matriks Wajah Terkunci' : 'Data Terenkripsi & Aman', style: const TextStyle(fontSize: 11, color: Color(0xFF006B5E), fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const Expanded(child: SizedBox(height: 24)),
+                        
+                        // --- AREA ACTIONS BUTTONS ---
+                        _isSavingPayload
+                            ? const Center(child: CircularProgressIndicator())
+                            : ElevatedButton.icon(
+                                onPressed: _captureFaceSample,
+                                icon: const Icon(Icons.camera_alt_outlined, color: Colors.white),
+                                label: Text(_isFaceCaptured ? 'Ambil Ulang Foto Wajah' : 'Ambil Foto Wajah', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF006B5E), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), elevation: 0),
+                              ),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          onPressed: _isFaceCaptured ? _finalizeRegistration : null, // Hanya aktif ketika wajah sudah difoto
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isFaceCaptured ? const Color(0xFF0B2F64) : const Color(0xFFCBD5E1), 
+                            padding: const EdgeInsets.symmetric(vertical: 16), 
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Selesaikan Registrasi', 
+                            style: TextStyle(color: _isFaceCaptured ? Colors.white : const Color(0xFF64748B), fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  // Border outline hijau pelindung wajah
-                  Container(
-                    width: 210, height: 210,
-                    decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFF006B5E), width: 2, strokeAlign: BorderSide.strokeAlignOutside)),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Tag Status Enkripsi
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(color: const Color(0xFFE2F1E8), borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.gpp_good, color: const Color(0xFF006B5E), size: 16),
-                    const SizedBox(width: 6),
-                    Text(_isFaceCaptured ? 'Matriks Wajah Terkunci' : 'Data Terenkripsi & Aman', style: const TextStyle(fontSize: 11, color: Color(0xFF006B5E), fontWeight: FontWeight.bold)),
-                  ],
                 ),
               ),
-            ),
-            const Spacer(),
-            
-            // --- AREA ACTIONS BUTTONS ---
-            _isSavingPayload
-                ? const Center(child: CircularProgressIndicator())
-                : ElevatedButton.icon(
-                    onPressed: _captureFaceSample,
-                    icon: const Icon(Icons.camera_alt_outlined, color: Colors.white),
-                    label: Text(_isFaceCaptured ? 'Ambil Ulang Foto Wajah' : 'Ambil Foto Wajah', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF006B5E), padding: const EdgeInsets.symmetric(vertical: 16), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), elevation: 0),
-                  ),
-            const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: _isFaceCaptured ? _finalizeRegistration : null, // Hanya aktif ketika wajah sudah difoto
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _isFaceCaptured ? const Color(0xFF0B2F64) : const Color(0xFFCBD5E1), 
-                padding: const EdgeInsets.symmetric(vertical: 16), 
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                elevation: 0,
-              ),
-              child: Text(
-                'Selesaikan Registrasi', 
-                style: TextStyle(color: _isFaceCaptured ? Colors.white : const Color(0xFF64748B), fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

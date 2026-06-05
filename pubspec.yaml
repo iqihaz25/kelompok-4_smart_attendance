@@ -37,6 +37,8 @@ dependencies:
   fl_chart: ^0.69.0
   excel: ^4.0.0
   cupertino_icons: ^1.0.8
+  firebase_storage: ^12.4.10
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:
