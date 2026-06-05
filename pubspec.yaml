@@ -1,0 +1,51 @@
+name: admin_hris
+description: "Smart Attendance App with GPS Geofencing + AI Face Recognition"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_messaging: ^15.1.3
+  flutter_local_notifications: ^18.0.1
+
+  # Firebase
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+
+  # GPS Realtime
+  geolocator: ^13.0.1
+
+  # Kamera (untuk preview dan capture)
+  camera: ^0.11.0+2
+
+  # =========================================================
+  # AI FACE RECOGNITION — Google ML Kit (BARU DITAMBAHKAN)
+  # Mendeteksi wajah secara on-device tanpa internet
+  # =========================================================
+  google_mlkit_face_detection: ^0.12.0
+
+  # Utilities
+  intl: ^0.19.0
+  provider: ^6.1.2
+  google_maps_flutter: ^2.9.0
+  web_socket_channel: ^3.0.1
+  fl_chart: ^0.69.0
+  excel: ^4.0.0
+  cupertino_icons: ^1.0.8
+  firebase_storage: ^12.4.10
+  image_picker: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
