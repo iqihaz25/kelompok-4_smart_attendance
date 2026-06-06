@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 
 class LeaveUserScreen extends StatefulWidget {
   final String employeeId;
@@ -20,16 +21,32 @@ class LeaveUserScreen extends StatefulWidget {
 
 class _LeaveUserScreenState extends State<LeaveUserScreen> {
   final _reasonController = TextEditingController();
-  File? _imageFile;
+  PlatformFile? _pickedFile;
   bool _isSubmitting = false;
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 70);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+  Future<void> _pickFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+        withData: true, 
+      );
+      
+      if (result != null) {
+        setState(() {
+          _pickedFile = result.files.first;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e. \nCatatan: Jika error MissingPluginException, silakan RESTART SERVER flutter Anda (tekan q lalu flutter run lagi).'),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -45,14 +62,22 @@ class _LeaveUserScreenState extends State<LeaveUserScreen> {
 
     try {
       String? imageUrl;
-      if (_imageFile != null) {
+      if (_pickedFile != null) {
+        final ext = _pickedFile!.extension ?? 'jpg';
         final storageRef = FirebaseStorage.instance
             .ref()
             .child('leave_attachments')
-            .child('${widget.employeeId}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+            .child('${widget.employeeId}_${DateTime.now().millisecondsSinceEpoch}.$ext');
         
-        final uploadTask = await storageRef.putFile(_imageFile!);
-        imageUrl = await uploadTask.ref.getDownloadURL();
+        UploadTask uploadTask;
+        if (kIsWeb) {
+          uploadTask = storageRef.putData(_pickedFile!.bytes!);
+        } else {
+          uploadTask = storageRef.putFile(File(_pickedFile!.path!));
+        }
+        
+        await uploadTask;
+        imageUrl = await storageRef.getDownloadURL();
       }
 
       await FirebaseFirestore.instance.collection('leave_requests').add({
@@ -66,7 +91,7 @@ class _LeaveUserScreenState extends State<LeaveUserScreen> {
 
       setState(() {
         _reasonController.clear();
-        _imageFile = null;
+        _pickedFile = null;
       });
 
       if (mounted) {
@@ -153,10 +178,10 @@ class _LeaveUserScreenState extends State<LeaveUserScreen> {
                                   maxLines: 4,
                                 ),
                                 const SizedBox(height: 16),
-                                const Text('Lampiran Bukti (Surat Sakit dari Dokter)', style: TextStyle(fontWeight: FontWeight.bold)),
+                                const Text('Lampiran Bukti (Surat Sakit dari Dokter/Bukti Lain)', style: TextStyle(fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 8),
                                 InkWell(
-                                  onTap: _pickImage,
+                                  onTap: _pickFile,
                                   child: Container(
                                     height: 120,
                                     decoration: BoxDecoration(
@@ -164,17 +189,28 @@ class _LeaveUserScreenState extends State<LeaveUserScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                       color: Colors.grey[100],
                                     ),
-                                    child: _imageFile != null
+                                    child: _pickedFile != null
                                         ? ClipRRect(
                                             borderRadius: BorderRadius.circular(8),
-                                            child: Image.file(_imageFile!, fit: BoxFit.cover, width: double.infinity),
+                                            child: ['jpg', 'jpeg', 'png'].contains(_pickedFile!.extension?.toLowerCase())
+                                                ? (kIsWeb
+                                                    ? Image.memory(_pickedFile!.bytes!, fit: BoxFit.cover, width: double.infinity)
+                                                    : Image.file(File(_pickedFile!.path!), fit: BoxFit.cover, width: double.infinity))
+                                                : Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      const Icon(Icons.picture_as_pdf, color: Colors.blue, size: 40),
+                                                      const SizedBox(height: 8),
+                                                      Text(_pickedFile!.name, style: const TextStyle(fontSize: 12), textAlign: TextAlign.center),
+                                                    ],
+                                                  ),
                                           )
                                         : const Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Icon(Icons.camera_alt, color: Colors.grey, size: 32),
+                                              Icon(Icons.upload_file, color: Colors.grey, size: 32),
                                               SizedBox(height: 8),
-                                              Text('Upload Surat Dokter (Opsional)', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                                              Text('Upload PDF / JPG / PNG (Opsional)', style: TextStyle(color: Colors.grey, fontSize: 12)),
                                             ],
                                           ),
                                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../shared_widgets/custom_sidebar.dart';
 import '../../../../core/constants/app_colors.dart';
 
@@ -64,25 +65,39 @@ class AdminLeaveScreen extends StatelessWidget {
     );
   }
 
-  void _showImage(BuildContext context, String imageUrl) {
-    showDialog(
-      context: context,
-      builder: (ctx) => Dialog(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppBar(
-              title: const Text('Lampiran Surat / Dokumen', style: TextStyle(fontSize: 16)),
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(ctx))
-              ],
-            ),
-            Image.network(imageUrl, fit: BoxFit.contain),
-          ],
+  void _showAttachment(BuildContext context, String fileUrl) async {
+    final decodedUrl = Uri.decodeFull(fileUrl).toLowerCase();
+    final isPdf = decodedUrl.contains('.pdf');
+
+    if (isPdf) {
+      final Uri url = Uri.parse(fileUrl);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Tidak dapat membuka file PDF.')));
+        }
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppBar(
+                title: const Text('Lampiran Surat / Dokumen', style: TextStyle(fontSize: 16)),
+                automaticallyImplyLeading: false,
+                actions: [
+                  IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.pop(ctx))
+                ],
+              ),
+              Image.network(fileUrl, fit: BoxFit.contain),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -143,7 +158,7 @@ class AdminLeaveScreen extends StatelessWidget {
                                       IconButton(
                                         icon: const Icon(Icons.image, color: Colors.blue),
                                         tooltip: 'Lihat Lampiran',
-                                        onPressed: () => _showImage(context, imageUrl),
+                                        onPressed: () => _showAttachment(context, imageUrl),
                                       ),
                                     IconButton(
                                       icon: const Icon(Icons.check_circle, color: AppColors.success),
